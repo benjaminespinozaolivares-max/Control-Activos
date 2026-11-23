@@ -141,6 +141,8 @@ python -m pip install pandas openpyxl argon2-cffi
 ``` bash
 python main.py
 ```
+User: 1
+Password: admin123
 
 Para utilizar la aplicación se deben disponer de usuarios autorizados y
 de los datos operacionales necesarios en las bases de datos
@@ -174,6 +176,8 @@ el alcance del proyecto.
 Proyecto personal desarrollado por Benjamín Espinoza O. Como parte del aprendizaje y aplicación
 práctica de programación, bases de datos relacionales y desarrollo de
 aplicaciones de escritorio.
+
+CONTACT: BENJAMINESPINOZA.CONTACT@GMAIL.COM
 
 ------------------------------------------------------------------------
 
