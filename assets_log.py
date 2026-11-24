@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import search_sql
 import ope_action
+import register
 
 
 class ControlActivosApp:
@@ -587,10 +588,281 @@ class ControlActivosApp:
             font=("Segoe UI", 9)
         ).pack(anchor="w", padx=20, pady=(0, 18))
 
+        acciones = tk.Frame(panel, bg=self.PANEL)
+        acciones.pack(anchor="w", padx=16, pady=(0, 18))
+
+        ttk.Button(
+            acciones,
+            text="REGISTRAR NUEVO ACTIVO",
+            style="Primary.TButton",
+            command=self.ventana_nuevo_activo
+        ).pack(side="left", padx=4)
+
+        ttk.Button(
+            acciones,
+            text="REGISTRAR NUEVO PERSONAL",
+            style="Primary.TButton",
+            command=self.ventana_nuevo_personal
+        ).pack(side="left", padx=4)
+
 
     # ---------------------------------
-    # VISTA DE NUEVA SOLICITUD
+    # VENTANAS INDEPENDIENTES DE REGISTRO
     # ---------------------------------
+
+    def ventana_nuevo_activo(self):
+        """Abre el formulario independiente para registrar un activo."""
+        self.ventana_activo = tk.Toplevel(self.root)
+        self.ventana_activo.title("CONTROL-ACTIVOS | Nuevo activo")
+        self.ventana_activo.geometry("560x540")
+        self.ventana_activo.resizable(False, False)
+        self.ventana_activo.configure(bg=self.BG)
+        self.ventana_activo.transient(self.root)
+        self.ventana_activo.grab_set()
+
+        contenedor = tk.Frame(self.ventana_activo, bg=self.BG, padx=30, pady=25)
+        contenedor.pack(fill="both", expand=True)
+        contenedor.columnconfigure(0, weight=1)
+
+        tk.Label(
+            contenedor,
+            text="REGISTRAR NUEVO ACTIVO",
+            bg=self.BG,
+            fg=self.TEXT,
+            font=("Segoe UI", 19, "bold")
+        ).pack(anchor="w")
+
+        tk.Label(
+            contenedor,
+            text="Ingresa la información correspondiente al activo.",
+            bg=self.BG,
+            fg=self.MUTED,
+            font=("Segoe UI", 9)
+        ).pack(anchor="w", pady=(5, 20))
+
+        formulario = tk.Frame(
+            contenedor,
+            bg=self.PANEL,
+            highlightthickness=1,
+            highlightbackground=self.BORDER,
+            padx=22,
+            pady=18
+        )
+        formulario.pack(fill="x", expand=True)
+        formulario.columnconfigure(1, weight=1)
+
+        self.entries_activo = {}
+        campos_activo = [
+            ("Código del activo", "codigo_activo"),
+            ("Tipo / artículo del activo", "articulo_activo"),
+            ("Número del activo", "numero_activo"),
+            ("Nombre del activo", "nombre_activo")
+        ]
+
+        for fila, (etiqueta, clave) in enumerate(campos_activo):
+            tk.Label(
+                formulario,
+                text=etiqueta.upper(),
+                bg=self.PANEL,
+                fg=self.MUTED,
+                font=("Segoe UI", 8, "bold")
+            ).grid(row=fila, column=0, sticky="w", padx=(0, 16), pady=14)
+
+            entrada = ttk.Entry(formulario)
+            entrada.grid(row=fila, column=1, sticky="ew", pady=14, ipady=4)
+            self.entries_activo[clave] = entrada
+
+        acciones = tk.Frame(contenedor, bg=self.BG)
+        acciones.pack(fill="x", pady=(18, 0))
+
+        ttk.Button(
+            acciones,
+            text="CERRAR",
+            style="Nav.TButton",
+            command=self.ventana_activo.destroy
+        ).pack(side="right", padx=(8, 0))
+
+        ttk.Button(
+            acciones,
+            text="REGISTRAR ACTIVO",
+            style="Primary.TButton",
+            command=self.registrar_activo
+        ).pack(side="right")
+
+        self.entries_activo["codigo_activo"].focus_set()
+
+    def ventana_nuevo_personal(self):
+        """Abre el formulario independiente para registrar personal."""
+        self.ventana_personal = tk.Toplevel(self.root)
+        self.ventana_personal.title("CONTROL-ACTIVOS | Nuevo personal")
+        self.ventana_personal.geometry("560x610")
+        self.ventana_personal.resizable(False, False)
+        self.ventana_personal.configure(bg=self.BG)
+        self.ventana_personal.transient(self.root)
+        self.ventana_personal.grab_set()
+
+        contenedor = tk.Frame(self.ventana_personal, bg=self.BG, padx=30, pady=25)
+        contenedor.pack(fill="both", expand=True)
+        contenedor.columnconfigure(0, weight=1)
+
+        tk.Label(
+            contenedor,
+            text="REGISTRAR NUEVO PERSONAL",
+            bg=self.BG,
+            fg=self.TEXT,
+            font=("Segoe UI", 19, "bold")
+        ).pack(anchor="w")
+
+        tk.Label(
+            contenedor,
+            text="Ingresa los datos de identificación y empresa.",
+            bg=self.BG,
+            fg=self.MUTED,
+            font=("Segoe UI", 9)
+        ).pack(anchor="w", pady=(5, 20))
+
+        formulario = tk.Frame(
+            contenedor,
+            bg=self.PANEL,
+            highlightthickness=1,
+            highlightbackground=self.BORDER,
+            padx=22,
+            pady=15
+        )
+        formulario.pack(fill="x", expand=True)
+        formulario.columnconfigure(1, weight=1)
+
+        self.entries_personal = {}
+        campos_personal = [
+            ("RUT / RUN", "rut"),
+            ("Nombre", "nombre"),
+            ("Apellido", "apellido"),
+            ("Empresa", "empresa"),
+            ("Cargo", "cargo")
+        ]
+
+        for fila, (etiqueta, clave) in enumerate(campos_personal):
+            tk.Label(
+                formulario,
+                text=etiqueta.upper(),
+                bg=self.PANEL,
+                fg=self.MUTED,
+                font=("Segoe UI", 8, "bold")
+            ).grid(row=fila, column=0, sticky="w", padx=(0, 16), pady=12)
+
+            entrada = ttk.Entry(formulario)
+            entrada.grid(row=fila, column=1, sticky="ew", pady=12, ipady=4)
+            self.entries_personal[clave] = entrada
+
+        acciones = tk.Frame(contenedor, bg=self.BG)
+        acciones.pack(fill="x", pady=(18, 0))
+
+        ttk.Button(
+            acciones,
+            text="CERRAR",
+            style="Nav.TButton",
+            command=self.ventana_personal.destroy
+        ).pack(side="right", padx=(8, 0))
+
+        ttk.Button(
+            acciones,
+            text="REGISTRAR PERSONAL",
+            style="Primary.TButton",
+            command=self.registrar_personal
+        ).pack(side="right")
+
+        self.entries_personal["rut"].focus_set()
+
+    def registrar_activo(self):
+        """Recibe los Entry del formulario y registra el activo en SQLite."""
+        datos_activo = {
+            clave: entrada.get().strip()
+            for clave, entrada in self.entries_activo.items()
+        }
+
+        # El número es opcional; los demás campos son obligatorios.
+        if not datos_activo["codigo_activo"] or not datos_activo["articulo_activo"] or not datos_activo["nombre_activo"]:
+            messagebox.showwarning(
+                "Datos incompletos",
+                "Completa el código, tipo/artículo y nombre del activo."
+            )
+            return
+
+        try:
+            numero = datos_activo["numero_activo"]
+            numero_activo = int(numero) if numero else None
+
+            resultado = register.registrar_activo(
+                nombre_activo=datos_activo["nombre_activo"],
+                articulo_activo=datos_activo["articulo_activo"],
+                numero_activo=numero_activo,
+                codigo_activo=datos_activo["codigo_activo"]
+            )
+
+            if resultado:
+                messagebox.showinfo(
+                    "Registro exitoso",
+                    "El activo se registró correctamente."
+                )
+                self.ventana_activo.destroy()
+            else:
+                messagebox.showerror(
+                    "Error de registro",
+                    "No fue posible registrar el activo."
+                )
+
+        except ValueError:
+            messagebox.showwarning(
+                "Número inválido",
+                "El número del activo debe ser un valor entero."
+            )
+        except Exception as error:
+            messagebox.showerror(
+                "Error al registrar activo",
+                f"No fue posible guardar el activo.\\n\\nDetalle: {error}"
+            )
+
+    def registrar_personal(self):
+        """Recibe los Entry del formulario y registra personal en SQLite."""
+        datos_personal = {
+            clave: entrada.get().strip()
+            for clave, entrada in self.entries_personal.items()
+        }
+
+        # Empresa y cargo pueden quedar vacíos según el esquema de la tabla.
+        if not datos_personal["rut"] or not datos_personal["nombre"] or not datos_personal["apellido"]:
+            messagebox.showwarning(
+                "Datos incompletos",
+                "Completa el RUT, nombre y apellido del personal."
+            )
+            return
+
+        try:
+            resultado = register.registrar_personal(
+                nombre_personal=datos_personal["nombre"],
+                apellido_personal=datos_personal["apellido"],
+                rut_personal=datos_personal["rut"],
+                empresa_personal=datos_personal["empresa"] or None,
+                cargo_personal=datos_personal["cargo"] or None
+            )
+
+            if resultado:
+                messagebox.showinfo(
+                    "Registro exitoso",
+                    "El personal se registró correctamente."
+                )
+                self.ventana_personal.destroy()
+            else:
+                messagebox.showerror(
+                    "Error de registro",
+                    "No fue posible registrar al personal."
+                )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Error al registrar personal",
+                f"No fue posible guardar el personal.\\n\\nDetalle: {error}"
+            )
 
     def mostrar_solicitud(self):
 

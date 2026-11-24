@@ -14,7 +14,7 @@ def registrar_activo(
     INSERT INTO activo (
     nombre_activo,
     articulo_activo,
-    numero-activo,
+    numero_activo,
     codigo_activo
     ) VALUES (?, ?, ?, ?)
     """, (nombre_activo, articulo_activo, numero_activo, codigo_activo))
